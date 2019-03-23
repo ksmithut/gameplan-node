@@ -120,12 +120,12 @@ exports.run = ({ options, operations }) => {
 
   devDependencies.add('nodemon')
 
-  operations.template(['template', 'README.md.template'], ['README.md'], {
+  operations.template(['templates', 'README.md.template'], ['README.md'], {
     name: options.name
   })
 
   const indexFile = options.typescript ? 'index.ts' : 'index.js'
-  operations.copy(['template', 'src', indexFile], ['src', indexFile])
+  operations.copy(['templates', 'src', indexFile], ['src', indexFile])
 
   // ===========================================================================
   // debug
@@ -133,7 +133,7 @@ exports.run = ({ options, operations }) => {
   if (options.debug) {
     operations.copy(
       [
-        'template',
+        'templates',
         '_vscode',
         options.docker ? 'launch.docker.json' : 'launch.json'
       ],
@@ -146,10 +146,10 @@ exports.run = ({ options, operations }) => {
   // ===========================================================================
   if (options.docker) {
     packageJSON.bin = packageJSON.main
-    operations.copy(['template', '.gitignore'], ['.dockerignore'])
+    operations.copy(['templates', '.gitignore'], ['.dockerignore'])
     operations.template(
       [
-        'template',
+        'templates',
         options.debug
           ? 'docker-compose.debug.yaml.template'
           : 'docker-compose.yaml.template'
@@ -169,13 +169,13 @@ exports.run = ({ options, operations }) => {
       .filter(Boolean)
       .join(' ')
     const runCommand = options.yarn ? '"yarn"' : '"npm", "run"'
-    operations.template(['template', 'Dockerfile.template'], ['Dockerfile'], {
+    operations.template(['templates', 'Dockerfile.template'], ['Dockerfile'], {
       lockFile,
       installCommand,
       buildCommand
     })
     operations.template(
-      ['template', 'Dockerfile.dev.template'],
+      ['templates', 'Dockerfile.dev.template'],
       ['Dockerfile.dev'],
       {
         lockFile,
@@ -190,7 +190,7 @@ exports.run = ({ options, operations }) => {
   // git
   // ===========================================================================
   if (options.git) {
-    operations.copy(['template', '.gitignore'], ['.gitignore'])
+    operations.copy(['templates', '.gitignore'], ['.gitignore'])
   }
 
   // ===========================================================================
@@ -211,7 +211,7 @@ exports.run = ({ options, operations }) => {
       .add('prettier-eslint-cli')
     if (options.typescript) devDependencies.add('@typescript-eslint/parser')
     operations.copy(
-      ['template', options.typescript ? '.eslintrc.typescript' : '.eslintrc'],
+      ['templates', options.typescript ? '.eslintrc.typescript' : '.eslintrc'],
       ['.eslintrc']
     )
   }
@@ -225,7 +225,7 @@ exports.run = ({ options, operations }) => {
     if (options.typescript) devDependencies.add('@types/jest').add('ts-jest')
     operations.copy(
       [
-        'template',
+        'templates',
         options.typescript ? 'jest.config.typescript.js' : 'jest.config.js'
       ],
       ['jest.config.js']
@@ -239,7 +239,7 @@ exports.run = ({ options, operations }) => {
     packageJSON.scripts.build = 'tsc'
     dependencies.add('typescript').add('@types/node')
     devDependencies.add('ts-node')
-    operations.copy(['template', 'tsconfig.json'], ['tsconfig.json'])
+    operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
   }
 
   if (options.git) operations.spawn('git', ['init'])
