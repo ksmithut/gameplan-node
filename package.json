@@ -1,0 +1,9 @@
+{
+  "name": "gameplan-node",
+  "version": "0.0.0",
+  "description": "A gameplan template to start a node project",
+  "tags": [
+    "gameplan"
+  ],
+  "main": "index.js"
+}

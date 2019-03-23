@@ -1,0 +1,24 @@
+FROM node:10-alpine
+
+# Needed for grpc
+# RUN apk --no-cache add --virtual libc6-compat
+# Needed for bcrypt
+# RUN apk --no-cache add --virtual builds-deps build-base python
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package.json .
+COPY {{lockFile}} .
+
+RUN {{installCommand}}
+
+# Bundle app source
+COPY . .
+
+# Exports
+USER node
+EXPOSE {{ports}}
+CMD [ {{runCommand}}, "start:dev" ]

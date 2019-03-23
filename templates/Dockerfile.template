@@ -1,0 +1,49 @@
+FROM node:10-alpine as base
+
+ENV NODE node10
+ENV PLATFORM alpine
+ENV ARCH x64
+
+# Needed for git dependency
+# RUN apk --no-cache add --virtual git
+# Needed for bcrypt
+# RUN apk --no-cache add --virtual builds-deps build-base python
+# Get pkg packages
+RUN yarn global add pkg pkg-fetch
+RUN pkg-fetch ${NODE} ${PLATFORM} ${ARCH}
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package.json .
+COPY {{lockFile}} .
+
+RUN {{installCommand}} --production
+
+# Bundle app source
+COPY . .
+{{buildCommand}}
+# Build assets
+RUN pkg package.json --targets "${NODE}-${PLATFORM}-${ARCH}" --output start
+
+# --- Release with Alpine ----
+FROM alpine
+
+# Needed for the executable
+RUN apk --no-cache add --virtual libstdc++
+RUN addgroup -g 1000 appgroup && adduser -u 1000 -G appgroup -s /bin/sh -D appuser
+
+RUN mkdir -p /usr/src/app && chown -R appuser:appgroup /usr/src/app
+WORKDIR /usr/src/app
+USER appuser
+
+# Install app dependencies
+COPY --from=base /usr/src/app/start ./
+# Needed for bcrypt
+# COPY --from=base /usr/src/app/node_modules/bcrypt/lib/binding/bcrypt_lib.node ./
+
+# Exports
+EXPOSE 3000
+CMD [ "./start" ]
