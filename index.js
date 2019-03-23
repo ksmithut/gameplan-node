@@ -25,7 +25,7 @@ exports.options = ({ directory }) => ({
   name: {
     type: 'string',
     description: 'The name of the project',
-    default: path.basename(meta.directory)
+    default: path.basename(directory)
   },
   debug: {
     type: 'boolean',
