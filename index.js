@@ -37,16 +37,6 @@ exports.options = ({ directory }) => ({
     description: 'Add docker files to the project',
     default: false
   },
-  git: {
-    type: 'boolean',
-    description: 'Initialize as a git repository',
-    default: true
-  },
-  lint: {
-    type: 'boolean',
-    description: 'Add linting support',
-    default: true
-  },
   test: {
     type: 'boolean',
     description: 'Initialize jest configuration',
@@ -67,7 +57,7 @@ exports.options = ({ directory }) => ({
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, git: boolean, lint: boolean, test: boolean, typescript: boolean, yarn: boolean }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, typescript: boolean, yarn: boolean }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -189,14 +179,12 @@ exports.run = ({ options, operations }) => {
   // ===========================================================================
   // git
   // ===========================================================================
-  if (options.git) {
-    operations.copy(['templates', '.gitignore'], ['.gitignore'])
-  }
+  operations.copy(['templates', '.gitignore'], ['.gitignore'])
 
   // ===========================================================================
   // lint
   // ===========================================================================
-  if (options.lint) {
+  {
     const ext = options.typescript ? 'ts' : 'js'
     const src = `'src/**/*.${ext}'`
     packageJSON.scripts.format = `prettier-eslint ${src} --write`
@@ -242,7 +230,7 @@ exports.run = ({ options, operations }) => {
     operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
   }
 
-  if (options.git) operations.spawn('git', ['init'])
+  operations.spawn('git', ['init'])
   operations.json(packageJSON, ['package.json'])
 
   const installCommand = options.yarn ? 'yarn' : 'npm'
