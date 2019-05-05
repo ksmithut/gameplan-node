@@ -1,6 +1,6 @@
-FROM node:10-alpine as base
+FROM node:10.4.1-alpine as base
 
-ENV NODE node10
+ENV NODE node10.4.1
 ENV PLATFORM alpine
 ENV ARCH x64
 
