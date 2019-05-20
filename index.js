@@ -100,13 +100,12 @@ exports.run = ({ options, operations }) => {
   packageJSON.name = options.name
   packageJSON.main = options.typescript ? 'dist/index.js' : 'src/index.js'
   packageJSON.scripts.start = 'node .'
-  const nodemonOptions = []
+  const nodemonOptions = ['nodemon']
+  if (options.typescript) nodemonOptions.unshift('TS_NODE_FILES=true')
+  if (options.typescript) nodemonOptions.push('src/index.ts')
   if (options.debug) nodemonOptions.push('--inspect=0.0.0.0:9229')
   if (options.typescript) nodemonOptions.push('--require=ts-node/register')
-  // This goes at the end
-  if (options.typescript) nodemonOptions.push('src/index.ts')
-  const nodemonFlags = nodemonOptions.join(' ')
-  packageJSON.scripts['start:dev'] = `nodemon ${nodemonFlags}`.trim()
+  packageJSON.scripts['start:dev'] = nodemonOptions.join(' ')
 
   devDependencies.add('nodemon')
 
