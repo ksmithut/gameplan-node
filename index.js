@@ -51,6 +51,11 @@ exports.options = ({ directory }) => ({
     type: 'boolean',
     description: 'Use yarn instead of npm',
     default: true
+  },
+  gitInit: {
+    type: 'boolean',
+    description: 'Whether or not to initialize as a new git repo',
+    default: true
   }
 })
 
@@ -229,7 +234,7 @@ exports.run = ({ options, operations }) => {
     operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
   }
 
-  operations.spawn('git', ['init'])
+  if (options.gitInit) operations.spawn('git', ['init'])
   operations.json(packageJSON, ['package.json'])
 
   const installCommand = options.yarn ? 'yarn' : 'npm'
