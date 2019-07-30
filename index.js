@@ -194,12 +194,7 @@ exports.run = ({ options, operations }) => {
     packageJSON.scripts.format = `prettier-eslint ${src} --write`
     packageJSON.scripts.lint = `eslint ${src} && prettier-eslint ${src} --list-different`
     devDependencies
-      .add('eslint')
-      .add('eslint-config-standard')
-      .add('eslint-plugin-import')
-      .add('eslint-plugin-node')
-      .add('eslint-plugin-promise')
-      .add('eslint-plugin-standard')
+      .add('standard')
       .add('prettier-eslint-cli')
     if (options.typescript) devDependencies.add('@typescript-eslint/parser')
     operations.copy(
