@@ -192,11 +192,15 @@ exports.run = ({ options, operations }) => {
     const ext = options.typescript ? 'ts' : 'js'
     const src = `'src/**/*.${ext}'`
     packageJSON.scripts.format = `prettier-eslint ${src} --write`
-    packageJSON.scripts.lint = `eslint ${src} && prettier-eslint ${src} --list-different`
+    packageJSON.scripts.lint = `eslint ${src} && prettier-eslint ${src} --list-different && tsc`
     devDependencies
       .add('standard')
       .add('prettier-eslint-cli')
+      .add('typescript')
     if (options.typescript) devDependencies.add('@typescript-eslint/parser')
+    if (!options.typescript) {
+      operations.copy(['template', 'tsconfig.js.json'], ['tsconfig.json'])
+    }
     operations.copy(
       ['templates', options.typescript ? '.eslintrc.typescript' : '.eslintrc'],
       ['.eslintrc']

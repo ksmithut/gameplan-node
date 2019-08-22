@@ -1,4 +1,4 @@
-FROM node:10.15.3-alpine
+FROM node:12-alpine
 
 # Needed for grpc
 # RUN apk --no-cache add --virtual libc6-compat
@@ -19,6 +19,6 @@ RUN {{installCommand}}
 COPY . .
 
 # Exports
-USER node
+# USER node
 EXPOSE {{ports}}
 CMD [ {{runCommand}}, "start:dev" ]
