@@ -199,7 +199,7 @@ exports.run = ({ options, operations }) => {
       .add('typescript')
     if (options.typescript) devDependencies.add('@typescript-eslint/parser')
     if (!options.typescript) {
-      operations.copy(['template', 'tsconfig.js.json'], ['tsconfig.json'])
+      operations.copy(['templates', 'tsconfig.js.json'], ['tsconfig.json'])
     }
     operations.copy(
       ['templates', options.typescript ? '.eslintrc.typescript' : '.eslintrc'],
