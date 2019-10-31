@@ -158,7 +158,8 @@ exports.run = ({ options, operations }) => {
     const buildCommand = options.typescript
       ? `RUN ${options.yarn ? 'yarn' : 'npm run'} build\n`
       : ''
-    const ports = ['3000']
+    const defaultPort = '3000'
+    const ports = [defaultPort]
       .concat(options.debug ? '9229' : null)
       .filter(Boolean)
       .join(' ')
@@ -166,7 +167,8 @@ exports.run = ({ options, operations }) => {
     operations.template(['templates', 'Dockerfile.template'], ['Dockerfile'], {
       lockFile,
       installCommand,
-      buildCommand
+      buildCommand,
+      ports: defaultPort
     })
     operations.template(
       ['templates', 'Dockerfile.dev.template'],
