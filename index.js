@@ -12,7 +12,7 @@ const path = require('path')
  */
 
 /**
- * @typedef {object.<string, OptionDefinition>} OptionDefinitions
+ * @typedef {{[key: string]: OptionDefinition}} OptionDefinitions
  */
 
 /**
@@ -179,7 +179,6 @@ exports.run = ({ options, operations }) => {
   // lint
   // ===========================================================================
   {
-    const ext = 'js'
     packageJSON.scripts.format = `prettier-standard`
     packageJSON.scripts.lint = `prettier-standard --check --lint`
     devDependencies
