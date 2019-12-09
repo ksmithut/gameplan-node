@@ -181,7 +181,7 @@ exports.run = ({ options, operations }) => {
   {
     const ext = 'js'
     packageJSON.scripts.format = `prettier-standard`
-    packageJSON.scripts.lint = `prettier-eslint --check --lint`
+    packageJSON.scripts.lint = `prettier-standard --check --lint`
     devDependencies
       .add('standard')
       .add('prettier-standard')
