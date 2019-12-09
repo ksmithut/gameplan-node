@@ -22,6 +22,5 @@ Options:
   --git         Initialize as a git repository   [boolean] [default: true]
   --lint        Add linting support              [boolean] [default: true]
   --test        Initialize jest configuration   [boolean] [default: false]
-  --typescript  Make it a typescript project    [boolean] [default: false]
   --yarn        Use yarn instead of npm          [boolean] [default: true]
 ```

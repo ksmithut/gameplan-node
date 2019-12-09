@@ -42,11 +42,6 @@ exports.options = ({ directory }) => ({
     description: 'Initialize jest configuration',
     default: false
   },
-  typescript: {
-    type: 'boolean',
-    description: 'Make it a typescript project',
-    default: false
-  },
   yarn: {
     type: 'boolean',
     description: 'Use yarn instead of npm',
@@ -54,7 +49,7 @@ exports.options = ({ directory }) => ({
   },
   gitInit: {
     type: 'boolean',
-    description: 'Whether or not to initialize as a new git repo',
+    description: 'Start with new git repo',
     default: true
   }
 })
@@ -62,7 +57,7 @@ exports.options = ({ directory }) => ({
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, typescript: boolean, yarn: boolean }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, yarn: boolean, gitInit: boolean }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -75,7 +70,7 @@ exports.options = ({ directory }) => ({
  * @param {(object: object, toPath: string|string[]) => void} data.operations.json -
  *   Render the raw object to the toPath (A relative path from the root of the
  *   destination directory)
- * @param {(command: string, ...args: string|string[]) => void} data.operations.spawn -
+ * @param {(command: string, ...args: (string|string[])[]) => void} data.operations.spawn -
  *   Run the command in a spawned process
  */
 exports.run = ({ options, operations }) => {
@@ -103,13 +98,10 @@ exports.run = ({ options, operations }) => {
   }
 
   packageJSON.name = options.name
-  packageJSON.main = options.typescript ? 'dist/index.js' : 'src/index.js'
+  packageJSON.main = 'src/index.js'
   packageJSON.scripts.start = 'node .'
   const nodemonOptions = ['nodemon']
-  if (options.typescript) nodemonOptions.unshift('TS_NODE_FILES=true')
-  if (options.typescript) nodemonOptions.push('src/index.ts')
   if (options.debug) nodemonOptions.push('--inspect=0.0.0.0:9229')
-  if (options.typescript) nodemonOptions.push('--require=ts-node/register')
   packageJSON.scripts['start:dev'] = nodemonOptions.join(' ')
 
   devDependencies.add('nodemon')
@@ -118,7 +110,7 @@ exports.run = ({ options, operations }) => {
     name: options.name
   })
 
-  const indexFile = options.typescript ? 'index.ts' : 'index.js'
+  const indexFile = 'index.js'
   operations.copy(['templates', 'src', indexFile], ['src', indexFile])
 
   // ===========================================================================
@@ -155,9 +147,6 @@ exports.run = ({ options, operations }) => {
     )
     const lockFile = options.yarn ? 'yarn.lock' : 'package-lock.json'
     const installCommand = options.yarn ? 'yarn' : 'npm install'
-    const buildCommand = options.typescript
-      ? `RUN ${options.yarn ? 'yarn' : 'npm run'} build\n`
-      : ''
     const defaultPort = '3000'
     const ports = [defaultPort]
       .concat(options.debug ? '9229' : null)
@@ -167,7 +156,6 @@ exports.run = ({ options, operations }) => {
     operations.template(['templates', 'Dockerfile.template'], ['Dockerfile'], {
       lockFile,
       installCommand,
-      buildCommand,
       ports: defaultPort
     })
     operations.template(
@@ -191,22 +179,15 @@ exports.run = ({ options, operations }) => {
   // lint
   // ===========================================================================
   {
-    const ext = options.typescript ? 'ts' : 'js'
-    const src = `'src/**/*.${ext}'`
-    packageJSON.scripts.format = `prettier-eslint ${src} --write`
-    packageJSON.scripts.lint = `eslint ${src} && prettier-eslint ${src} --list-different && tsc`
+    const ext = 'js'
+    packageJSON.scripts.format = `prettier-standard`
+    packageJSON.scripts.lint = `prettier-eslint --check --lint`
     devDependencies
       .add('standard')
-      .add('prettier-eslint-cli')
+      .add('prettier-standard')
       .add('typescript')
-    if (options.typescript) devDependencies.add('@typescript-eslint/parser')
-    if (!options.typescript) {
-      operations.copy(['templates', 'tsconfig.js.json'], ['tsconfig.json'])
-    }
-    operations.copy(
-      ['templates', options.typescript ? '.eslintrc.typescript' : '.eslintrc'],
-      ['.eslintrc']
-    )
+    operations.copy(['templates', 'tsconfig.js.json'], ['tsconfig.json'])
+    operations.copy(['templates', '.eslintrc'], ['.eslintrc'])
   }
 
   // ===========================================================================
@@ -215,24 +196,7 @@ exports.run = ({ options, operations }) => {
   if (options.test) {
     packageJSON.scripts.test = 'jest'
     devDependencies.add('jest')
-    if (options.typescript) devDependencies.add('@types/jest').add('ts-jest')
-    operations.copy(
-      [
-        'templates',
-        options.typescript ? 'jest.config.typescript.js' : 'jest.config.js'
-      ],
-      ['jest.config.js']
-    )
-  }
-
-  // ===========================================================================
-  // typescript
-  // ===========================================================================
-  if (options.typescript) {
-    packageJSON.scripts.build = 'tsc'
-    dependencies.add('typescript').add('@types/node')
-    devDependencies.add('ts-node')
-    operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
+    operations.copy(['templates', 'jest.config.js'], ['jest.config.js'])
   }
 
   if (options.gitInit) operations.spawn('git', ['init'])
