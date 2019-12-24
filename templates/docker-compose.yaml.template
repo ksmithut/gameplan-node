@@ -13,3 +13,4 @@ services:
       - /usr/src/app/node_modules # So it doesn't use the local node_modules
     ports:
       - '3000:3000' # Application port
+      - '9229:9229' # Debug port

@@ -27,11 +27,6 @@ exports.options = ({ directory }) => ({
     description: 'The name of the project',
     default: path.basename(directory)
   },
-  debug: {
-    type: 'boolean',
-    description: 'Enable vscode debugging',
-    default: false
-  },
   docker: {
     type: 'boolean',
     description: 'Add docker files to the project',
@@ -110,9 +105,7 @@ exports.run = ({ options, operations }) => {
   packageJSON.name = options.name
   packageJSON.main = 'src/index.js'
   packageJSON.scripts.start = 'node .'
-  const nodemonOptions = ['nodemon']
-  if (options.debug) nodemonOptions.push('--inspect=0.0.0.0:9229')
-  packageJSON.scripts['start:dev'] = nodemonOptions.join(' ')
+  packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
 
   devDependencies.add('nodemon')
 
@@ -126,16 +119,14 @@ exports.run = ({ options, operations }) => {
   // ===========================================================================
   // debug
   // ===========================================================================
-  if (options.debug) {
-    operations.copy(
-      [
-        'templates',
-        '_vscode',
-        options.docker ? 'launch.docker.json' : 'launch.json'
-      ],
-      ['.vscode', 'launch.json']
-    )
-  }
+  operations.copy(
+    [
+      'templates',
+      '_vscode',
+      options.docker ? 'launch.docker.json' : 'launch.json'
+    ],
+    ['.vscode', 'launch.json']
+  )
 
   // ===========================================================================
   // docker
@@ -144,12 +135,7 @@ exports.run = ({ options, operations }) => {
     packageJSON.bin = packageJSON.main
     operations.copy(['templates', '.gitignore'], ['.dockerignore'])
     operations.template(
-      [
-        'templates',
-        options.debug
-          ? 'docker-compose.debug.yaml.template'
-          : 'docker-compose.yaml.template'
-      ],
+      ['templates', 'docker-compose.yaml.template'],
       ['docker-compose.yaml'],
       {
         name: options.name
@@ -157,16 +143,12 @@ exports.run = ({ options, operations }) => {
     )
     const lockFile = options.yarn ? 'yarn.lock' : 'package-lock.json'
     const installCommand = options.yarn ? 'yarn' : 'npm install'
-    const defaultPort = '3000'
-    const ports = [defaultPort]
-      .concat(options.debug ? '9229' : null)
-      .filter(Boolean)
-      .join(' ')
+    const port = '3000'
     const runCommand = options.yarn ? '"yarn"' : '"npm", "run"'
     operations.template(['templates', 'Dockerfile.template'], ['Dockerfile'], {
       lockFile,
       installCommand,
-      ports: defaultPort
+      ports: port
     })
     operations.template(
       ['templates', 'Dockerfile.dev.template'],
@@ -174,7 +156,7 @@ exports.run = ({ options, operations }) => {
       {
         lockFile,
         installCommand,
-        ports,
+        ports: `${port} 9229`,
         runCommand
       }
     )
