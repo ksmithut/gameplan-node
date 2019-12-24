@@ -37,6 +37,11 @@ exports.options = ({ directory }) => ({
     description: 'Add docker files to the project',
     default: false
   },
+  kubernetes: {
+    type: 'boolean',
+    description: 'Put in kubernetes related files',
+    default: false
+  },
   test: {
     type: 'boolean',
     description: 'Initialize jest configuration',
@@ -51,13 +56,18 @@ exports.options = ({ directory }) => ({
     type: 'boolean',
     description: 'Start with new git repo',
     default: true
+  },
+  gitHooks: {
+    type: 'boolean',
+    description: 'Use git hooks to format code',
+    default: false
   }
 })
 
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, yarn: boolean, gitInit: boolean }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, yarn: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -168,6 +178,19 @@ exports.run = ({ options, operations }) => {
         runCommand
       }
     )
+
+    if (options.kubernetes) {
+      operations.template(
+        ['templates', 'skaffold.yaml.template'],
+        ['skaffold.yaml'],
+        {
+          name: options.name
+        }
+      )
+      operations.template(['templates', 'k8s.yaml.template'], ['k8s.yaml'], {
+        name: options.name
+      })
+    }
   }
 
   // ===========================================================================
@@ -198,7 +221,21 @@ exports.run = ({ options, operations }) => {
     operations.copy(['templates', 'jest.config.js'], ['jest.config.js'])
   }
 
-  if (options.gitInit) operations.spawn('git', ['init'])
+  // ===========================================================================
+  // git
+  // ===========================================================================
+  if (options.gitInit) {
+    operations.spawn('git', ['init'])
+    if (options.gitHooks) {
+      operations.copy(['templates', '.huskyrc'], ['.huskyrc'])
+      operations.copy(
+        ['templates', 'lint-staged.config.js'],
+        ['lint-staged.config.js']
+      )
+      devDependencies.add('husky').add('lint-staged')
+    }
+  }
+
   operations.json(packageJSON, ['package.json'])
 
   const installCommand = options.yarn ? 'yarn' : 'npm'
