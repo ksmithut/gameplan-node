@@ -9,6 +9,9 @@ deploy:
       - k8s.yaml
 profiles:
   - name: dev
+    activation:
+      - kubeContext: minikube
+        command: dev
     build:
       artifacts:
         - image: {{name}}
