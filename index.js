@@ -164,6 +164,7 @@ exports.run = ({ options, operations }) => {
       .add('standard')
       .add('prettier-standard')
       .add('typescript')
+      .add('@types/node')
     operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
     operations.copy(['templates', '.eslintrc'], ['.eslintrc'])
   }
