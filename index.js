@@ -194,7 +194,7 @@ exports.run = ({ options, operations }) => {
 
   operations.json(packageJSON, ['package.json'])
 
-  if (dependencies.size) operations.spawn('yarn', ['install', ...dependencies])
+  if (dependencies.size) operations.spawn('yarn', ['add', ...dependencies])
   if (devDependencies.size)
-    operations.spawn('yarn', ['install', '--dev', ...devDependencies])
+    operations.spawn('yarn', ['add', '--dev', ...devDependencies])
 }
