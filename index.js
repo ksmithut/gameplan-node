@@ -128,7 +128,7 @@ exports.run = ({ options, operations }) => {
   // ===========================================================================
   if (options.docker) {
     packageJSON.bin = packageJSON.main
-    operations.copy(['templates', '.gitignore'], ['.dockerignore'])
+    operations.copy(['templates', '.dockerignore'], ['.dockerignore'])
     operations.template(
       ['templates', 'docker-compose.yaml'],
       ['docker-compose.yaml'],
