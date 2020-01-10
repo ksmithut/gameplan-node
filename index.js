@@ -42,11 +42,6 @@ exports.options = ({ directory }) => ({
     description: 'Initialize jest configuration',
     default: false
   },
-  yarn: {
-    type: 'boolean',
-    description: 'Use yarn instead of npm',
-    default: true
-  },
   gitInit: {
     type: 'boolean',
     description: 'Start with new git repo',
@@ -62,7 +57,7 @@ exports.options = ({ directory }) => ({
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, yarn: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -109,7 +104,7 @@ exports.run = ({ options, operations }) => {
 
   devDependencies.add('nodemon')
 
-  operations.template(['templates', 'README.md.template'], ['README.md'], {
+  operations.template(['templates', 'README.md'], ['README.md'], {
     name: options.name
   })
 
@@ -135,41 +130,20 @@ exports.run = ({ options, operations }) => {
     packageJSON.bin = packageJSON.main
     operations.copy(['templates', '.gitignore'], ['.dockerignore'])
     operations.template(
-      ['templates', 'docker-compose.yaml.template'],
+      ['templates', 'docker-compose.yaml'],
       ['docker-compose.yaml'],
       {
         name: options.name
       }
     )
-    const lockFile = options.yarn ? 'yarn.lock' : 'package-lock.json'
-    const installCommand = options.yarn ? 'yarn' : 'npm install'
-    const port = '3000'
-    const runCommand = options.yarn ? '"yarn"' : '"npm", "run"'
-    operations.template(['templates', 'Dockerfile.template'], ['Dockerfile'], {
-      lockFile,
-      installCommand,
-      ports: port
-    })
-    operations.template(
-      ['templates', 'Dockerfile.dev.template'],
-      ['Dockerfile.dev'],
-      {
-        lockFile,
-        installCommand,
-        ports: `${port} 9229`,
-        runCommand
-      }
-    )
+    operations.copy(['templates', 'Dockerfile'], ['Dockerfile'])
+    operations.copy(['templates', 'Dockerfile.dev'], ['Dockerfile.dev'])
 
     if (options.kubernetes) {
-      operations.template(
-        ['templates', 'skaffold.yaml.template'],
-        ['skaffold.yaml'],
-        {
-          name: options.name
-        }
-      )
-      operations.template(['templates', 'k8s.yaml.template'], ['k8s.yaml'], {
+      operations.template(['templates', 'skaffold.yaml'], ['skaffold.yaml'], {
+        name: options.name
+      })
+      operations.template(['templates', 'k8s.yaml'], ['k8s.yaml'], {
         name: options.name
       })
     }
@@ -190,7 +164,7 @@ exports.run = ({ options, operations }) => {
       .add('standard')
       .add('prettier-standard')
       .add('typescript')
-    operations.copy(['templates', 'tsconfig.js.json'], ['tsconfig.json'])
+    operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
     operations.copy(['templates', '.eslintrc'], ['.eslintrc'])
   }
 
@@ -220,12 +194,7 @@ exports.run = ({ options, operations }) => {
 
   operations.json(packageJSON, ['package.json'])
 
-  const installCommand = options.yarn ? 'yarn' : 'npm'
-  const installArg = options.yarn ? 'add' : 'install'
-  const devFlag = options.yarn ? '--dev' : '--save-dev'
-  const baseArgs = [installArg]
-  const devArgs = baseArgs.concat([devFlag, ...devDependencies])
-  const prodArgs = baseArgs.concat([...dependencies])
-  if (dependencies.size) operations.spawn(installCommand, prodArgs)
-  if (devDependencies.size) operations.spawn(installCommand, devArgs)
+  if (dependencies.size) operations.spawn('yarn', ['install', ...dependencies])
+  if (devDependencies.size)
+    operations.spawn('yarn', ['install', '--dev', ...devDependencies])
 }

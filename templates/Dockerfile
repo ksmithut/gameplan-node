@@ -6,19 +6,19 @@ FROM node:12-alpine
 # RUN apk --no-cache add --virtual builds-deps build-base python
 
 # Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /app
+WORKDIR /app
 
 # Install dependencies
-COPY package.json .
-COPY {{lockFile}} .
+COPY package.json ./
+COPY yarn.lock ./
 
-RUN {{installCommand}}
+RUN yarn --production
 
 # Bundle app source
-COPY . .
+COPY src src
 
 # Exports
 # USER node
-EXPOSE {{ports}}
-CMD [ {{runCommand}}, "start:dev" ]
+EXPOSE 3000
+CMD [ "node", "." ]
