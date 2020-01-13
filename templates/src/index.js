@@ -36,3 +36,10 @@ async function main (process) {
   process.on('SIGINT', gracefulShutdown)
   process.on('SIGTERM', gracefulShutdown)
 }
+
+if (module === require.main) {
+  main(process).catch(err => {
+    console.error(err)
+    process.exit(1)
+  })
+}
