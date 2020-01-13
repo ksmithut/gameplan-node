@@ -13,6 +13,8 @@ async function start (process) {
   const server = http.createServer((req, res) => {
     res.end('Hello World')
   })
+  console.log(`Server listening on port ${port}`)
+
   const closeServer = await httpListen(server, port)
   return async () => {
     await timeout(closeServer(), 10000)
