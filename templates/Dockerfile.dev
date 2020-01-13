@@ -15,7 +15,7 @@ COPY --chown=node:node package.json yarn.lock ./
 RUN yarn
 
 # Bundle app source
-COPY . .
+COPY --chown=node:node . .
 
 # Exports
 EXPOSE 3000 9229
