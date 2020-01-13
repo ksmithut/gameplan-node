@@ -108,8 +108,15 @@ exports.run = ({ options, operations }) => {
     name: options.name
   })
 
-  const indexFile = 'index.js'
-  operations.copy(['templates', 'src', indexFile], ['src', indexFile])
+  operations.copy(['templates', 'src', 'index.js'], ['src', 'index.js'])
+  operations.copy(
+    ['templates', 'src', 'lib', 'http-listen.js'],
+    ['src', 'lib', 'http-listen.js']
+  )
+  operations.copy(
+    ['templates', 'src', 'lib', 'timeout.js'],
+    ['src', 'lib', 'timeout.js']
+  )
 
   // ===========================================================================
   // debug

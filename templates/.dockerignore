@@ -145,6 +145,7 @@ config/local*.ts
 .vscode
 .dockerignore
 .eslintrc
+.git
 .gitignore
 .huskyrc
 docker-compose.yaml
