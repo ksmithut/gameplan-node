@@ -2,12 +2,10 @@
 
 const http = require('http')
 const { httpListen } = require('./lib/http-listen')
+const { main } = require('./lib/main')
 const { timeout } = require('./lib/timeout')
 
-/**
- * @param {NodeJS.Process} process
- */
-async function start (process) {
+const start = main(async process => {
   const { PORT = '3000' } = process.env
   const port = Number(PORT)
   const server = http.createServer((req, res) => {
@@ -19,28 +17,12 @@ async function start (process) {
   return async () => {
     await timeout(closeServer(), 10000)
   }
-}
+})
 
-/**
- * @param {NodeJS.Process} process
- */
-async function main (process) {
-  const close = await start(process)
-
-  function gracefulShutdown () {
-    close()
-      .then(() => process.exit())
-      .catch(err => {
-        console.error(err)
-        process.exit(1)
-      })
-  }
-  process.on('SIGINT', gracefulShutdown)
-  process.on('SIGTERM', gracefulShutdown)
-}
+exports.start = start
 
 if (module === require.main) {
-  main(process).catch(err => {
+  start(process).catch(err => {
     console.error(err)
     process.exit(1)
   })
