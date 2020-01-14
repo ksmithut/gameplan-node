@@ -117,6 +117,10 @@ exports.run = ({ options, operations }) => {
     ['templates', 'src', 'lib', 'timeout.js'],
     ['src', 'lib', 'timeout.js']
   )
+  operations.copy(
+    ['templates', 'src', 'lib', 'main.js'],
+    ['src', 'lib', 'main.js']
+  )
 
   // ===========================================================================
   // debug
