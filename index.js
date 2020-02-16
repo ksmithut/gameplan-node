@@ -99,8 +99,10 @@ exports.run = ({ options, operations }) => {
 
   packageJSON.name = options.name
   packageJSON.main = 'src/index.js'
-  packageJSON.scripts.start = 'node .'
-  packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
+  packageJSON.bin = 'src/bin/server.js'
+  packageJSON.scripts.start = 'node src/bin/server.js'
+  packageJSON.scripts['start:dev'] =
+    'nodemon src/bin/server.js --inspect=0.0.0.0:9229'
 
   devDependencies.add('nodemon')
 
@@ -118,8 +120,8 @@ exports.run = ({ options, operations }) => {
     ['src', 'lib', 'timeout.js']
   )
   operations.copy(
-    ['templates', 'src', 'lib', 'main.js'],
-    ['src', 'lib', 'main.js']
+    ['templates', 'src', 'bin', 'server.js'],
+    ['src', 'bin', 'server.js']
   )
 
   // ===========================================================================
@@ -138,7 +140,6 @@ exports.run = ({ options, operations }) => {
   // docker
   // ===========================================================================
   if (options.docker) {
-    packageJSON.bin = packageJSON.main
     operations.copy(['templates', '.dockerignore'], ['.dockerignore'])
     operations.template(
       ['templates', 'docker-compose.yaml'],
