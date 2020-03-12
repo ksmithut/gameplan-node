@@ -110,31 +110,26 @@ exports.run = ({ options, operations }) => {
     name: options.name
   })
 
-  operations.copy(['templates', 'src', 'index.js'], ['src', 'index.js'])
-  operations.copy(
-    ['templates', 'src', 'lib', 'http-listen.js'],
-    ['src', 'lib', 'http-listen.js']
-  )
-  operations.copy(
-    ['templates', 'src', 'lib', 'timeout.js'],
-    ['src', 'lib', 'timeout.js']
-  )
-  operations.copy(
-    ['templates', 'src', 'bin', 'server.js'],
-    ['src', 'bin', 'server.js']
-  )
+  operations.copy(['templates', 'src'], ['src'])
+
+  // operations.copy(['templates', 'src', 'index.js'], ['src', 'index.js'])
+  // operations.copy(
+  //   ['templates', 'src', 'lib', 'http-listen.js'],
+  //   ['src', 'lib', 'http-listen.js']
+  // )
+  // operations.copy(
+  //   ['templates', 'src', 'lib', 'timeout.js'],
+  //   ['src', 'lib', 'timeout.js']
+  // )
+  // operations.copy(
+  //   ['templates', 'src', 'bin', 'server.js'],
+  //   ['src', 'bin', 'server.js']
+  // )
 
   // ===========================================================================
   // debug
   // ===========================================================================
-  operations.copy(
-    [
-      'templates',
-      '_vscode',
-      options.docker ? 'launch.docker.json' : 'launch.json'
-    ],
-    ['.vscode', 'launch.json']
-  )
+  operations.copy(['templates', '_vscode'], ['.vscode'])
 
   // ===========================================================================
   // docker
