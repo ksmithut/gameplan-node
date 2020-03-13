@@ -51,13 +51,19 @@ exports.options = ({ directory }) => ({
     type: 'boolean',
     description: 'Use git hooks to format code',
     default: false
+  },
+  template: {
+    type: 'string',
+    description: 'Choose which template to use',
+    default: 'simple',
+    choices: ['simple', 'web']
   }
 })
 
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean, template: 'scratch' | 'web' }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -104,27 +110,19 @@ exports.run = ({ options, operations }) => {
   packageJSON.scripts['start:dev'] =
     'nodemon src/bin/server.js --inspect=0.0.0.0:9229'
 
+  if (options.template === 'scratch') {
+    packageJSON.bin = undefined
+    packageJSON.scripts.start = 'node .'
+    packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
+  }
+
   devDependencies.add('nodemon')
 
   operations.template(['templates', 'README.md'], ['README.md'], {
     name: options.name
   })
 
-  operations.copy(['templates', 'src'], ['src'])
-
-  // operations.copy(['templates', 'src', 'index.js'], ['src', 'index.js'])
-  // operations.copy(
-  //   ['templates', 'src', 'lib', 'http-listen.js'],
-  //   ['src', 'lib', 'http-listen.js']
-  // )
-  // operations.copy(
-  //   ['templates', 'src', 'lib', 'timeout.js'],
-  //   ['src', 'lib', 'timeout.js']
-  // )
-  // operations.copy(
-  //   ['templates', 'src', 'bin', 'server.js'],
-  //   ['src', 'bin', 'server.js']
-  // )
+  operations.copy(['templates', `src-${options.template}`], ['src'])
 
   // ===========================================================================
   // debug
