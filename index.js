@@ -63,7 +63,7 @@ exports.options = ({ directory }) => ({
 /**
  * @param {object} data
  * You'll want to change data.options to match what you have in your
- * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean, template: 'scratch' | 'web' }} data.options - The resolved options as defined from above
+ * @param {{ name: string, debug: boolean, docker: boolean, test: boolean, gitInit: boolean, gitHooks: boolean, kubernetes: boolean, template: 'simple' | 'web' }} data.options - The resolved options as defined from above
  * @param {object} data.operations
  * @param {(fromPath: string|string[], toPath: string|string[]) => void} data.operations.copy -
  *   Copy a file from fromPath (a relative path from the root of this repo) to
@@ -105,15 +105,14 @@ exports.run = ({ options, operations }) => {
 
   packageJSON.name = options.name
   packageJSON.main = 'src/index.js'
-  packageJSON.bin = 'src/bin/server.js'
-  packageJSON.scripts.start = 'node src/bin/server.js'
-  packageJSON.scripts['start:dev'] =
-    'nodemon src/bin/server.js --inspect=0.0.0.0:9229'
+  packageJSON.scripts.start = 'node .'
+  packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
 
-  if (options.template === 'scratch') {
-    packageJSON.bin = undefined
-    packageJSON.scripts.start = 'node .'
-    packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
+  if (options.template === 'web') {
+    packageJSON.bin = 'src/bin/server.js'
+    packageJSON.scripts.start = 'node src/bin/server.js'
+    packageJSON.scripts['start:dev'] =
+      'nodemon src/bin/server.js --inspect=0.0.0.0:9229'
   }
 
   devDependencies.add('nodemon')
