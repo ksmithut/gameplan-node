@@ -5,10 +5,7 @@ const { getConfig } = require('../config')
 
 start(getConfig(process))
   .then(close => {
-    let closing = false
     function shutdown () {
-      if (closing) return
-      closing = true
       close()
         .then(() => process.exit())
         .catch(err => {
