@@ -7,6 +7,12 @@
   ],
   "main": "index.js",
   "devDependencies": {
-    "@types/node": "^13.1.6"
+    "@types/node": "^13.1.6",
+    "prettier-standard": "^16.3.0",
+    "standard": "^14.3.3"
+  },
+  "scripts": {
+    "format": "prettier-standard",
+    "lint": "prettier-standard --check --lint"
   }
 }

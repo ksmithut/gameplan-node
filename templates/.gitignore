@@ -140,4 +140,3 @@ typings/
 # End of https://www.gitignore.io/api/node,visualstudiocode,macos,linux
 
 config/local*.js
-config/local*.ts

@@ -12,17 +12,18 @@ exports.Timeout = Timeout
 /**
  * @template TValue
  * @param {Promise<TValue>} promise
- * @param {number} period
- * @param {string} [errorMessage]
- * @param {string} [errorCode]
+ * @param {number} ms
+ * @param {object} [options]
+ * @param {string} [options.errorMessage]
+ * @param {string} [options.errorCode]
  */
-function timeout (promise, period, errorMessage, errorCode) {
+function timeout (promise, ms, { errorMessage, errorCode } = {}) {
   /** @type {NodeJS.Timeout} */
   let timeoutId
   return Promise.race([
     promise,
-    new Promise((resolve, reject) => {
-      timeoutId = setTimeout(resolve, period)
+    new Promise(resolve => {
+      timeoutId = setTimeout(resolve, ms)
     }).then(() => Promise.reject(new Timeout(errorMessage, errorCode)))
   ]).finally(() => clearTimeout(timeoutId))
 }

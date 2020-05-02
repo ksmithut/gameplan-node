@@ -1,9 +1,11 @@
 'use strict'
 
+/** @typedef {ReturnType<getConfig>} Config */
+
 /**
- * @param {NodeJS.ProcessEnv} env
+ * @param {NodeJS.Process} process
  */
-function getConfig (env) {
+function getConfig (process) {
   const { PORT = '3000' } = process.env
   return {
     port: Number(PORT)

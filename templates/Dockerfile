@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:14-alpine
 
 # Needed for grpc
 # RUN apk --no-cache add --virtual libc6-compat
@@ -12,11 +12,11 @@ WORKDIR /app
 
 # Install dependencies
 COPY --chown=node:node package.json yarn.lock ./
-RUN yarn --production --silent
+RUN yarn --production
 
 # Bundle app source
 COPY --chown=node:node . .
 
 # Exports
 EXPOSE 3000
-CMD [ "node", "." ]
+CMD [ "node", "src/bin/server.js" ]

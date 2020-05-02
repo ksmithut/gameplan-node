@@ -3,15 +3,14 @@
 const http = require('http')
 
 /**
- * @param {object} [options]
+ *
  */
-function configureServer ({} = {}) {
+function configureServer () {
   /** @type {import('http').RequestListener} */
   const app = (req, res) => {
-    res.end('Hello World')
+    res.end(`${req.method} ${req.url}`)
   }
   const server = http.createServer(app)
-
   return server
 }
 
