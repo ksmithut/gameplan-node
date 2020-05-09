@@ -3,7 +3,7 @@
 const { start } = require('../index')
 const { getConfig } = require('../config')
 
-start(getConfig(process))
+start(getConfig(process.env))
   .then(close => {
     function shutdown () {
       close()

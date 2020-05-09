@@ -3,10 +3,10 @@
 /** @typedef {ReturnType<getConfig>} Config */
 
 /**
- * @param {NodeJS.Process} process
+ * @param {NodeJS.ProcessEnv} env
  */
-function getConfig (process) {
-  const { PORT = '3000' } = process.env
+function getConfig (env) {
+  const { PORT = '3000' } = env
   return {
     port: Number(PORT)
   }
