@@ -8,7 +8,8 @@ const { configureServer } = require('./server')
 /**
  * @param {import('./config').Config} config
  */
-async function start ({ port }) {
+async function start (config) {
+  const { port } = config
   const server = configureServer()
   const closeServer = await httpListen(server, port)
   console.log(`Server listening on port ${port}`)
