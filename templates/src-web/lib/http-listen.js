@@ -7,13 +7,15 @@ const { promisify } = require('util')
  * @param {number} port
  */
 async function httpListen (server, port) {
+  /** @type {() => Promise<void>} */
+  const close = promisify(server.close.bind(server))
   await new Promise((resolve, reject) => {
     server
       .listen(port)
       .on('listening', resolve)
       .on('error', reject)
   })
-  return promisify(server.close.bind(server))
+  return close
 }
 
 exports.httpListen = httpListen

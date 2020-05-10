@@ -7,6 +7,7 @@ class Timeout extends Error {
     this.code = code
   }
 }
+
 exports.Timeout = Timeout
 
 /**

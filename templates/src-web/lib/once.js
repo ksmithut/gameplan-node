@@ -3,7 +3,6 @@
 /**
  * @template TReturnValue
  * @param {() => TReturnValue} fn
- * @returns {() => TReturnValue}
  */
 function once (fn) {
   let called = false
@@ -11,8 +10,8 @@ function once (fn) {
   let value
   return () => {
     if (!called) {
-      called = true
       value = fn()
+      called = true
     }
     return value
   }
