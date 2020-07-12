@@ -7,6 +7,6 @@ module.exports = {
    */
   '**/*.js': filenames => {
     const paths = filenames.join(' ')
-    return [`prettier-standard ${paths}`, 'tsc', `git add ${paths}`]
+    return [`prettier-standard ${paths}`, 'tsc']
   }
 }
