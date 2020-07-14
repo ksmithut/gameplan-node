@@ -170,7 +170,7 @@ exports.run = ({ options, operations }) => {
       .add('typescript')
       .add('@types/node')
     operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
-    operations.copy(['templates', '.eslintrc'], ['.eslintrc'])
+    operations.copy(['templates', '.eslintrc.json'], ['.eslintrc.json'])
   }
 
   // ===========================================================================
@@ -188,7 +188,7 @@ exports.run = ({ options, operations }) => {
   if (options.gitInit) {
     operations.spawn('git', ['init'])
     if (options.gitHooks) {
-      operations.copy(['templates', '.huskyrc'], ['.huskyrc'])
+      operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
       operations.copy(
         ['templates', 'lint-staged.config.js'],
         ['lint-staged.config.js']
