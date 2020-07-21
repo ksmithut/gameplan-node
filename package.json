@@ -7,9 +7,9 @@
   ],
   "main": "index.js",
   "devDependencies": {
-    "@types/node": "^13.1.6",
-    "prettier-standard": "^16.3.0",
-    "standard": "^14.3.3"
+    "@types/node": "^14.0.24",
+    "prettier-standard": "^16.4.1",
+    "standard": "^14.3.4"
   },
   "scripts": {
     "format": "prettier-standard",
