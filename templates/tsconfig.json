@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "moduleResolution": "Node",
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "esnext",
+    "target": "ESNext",
     "alwaysStrict": true,
     "strict": true,
     "sourceMap": true,
