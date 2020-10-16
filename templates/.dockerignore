@@ -143,16 +143,16 @@ config/local*.js
 
 .vscode
 .dockerignore
-.eslintrc
+.eslintrc.json
 .git
 .gitignore
-.huskyrc
+.huskyrc.json
 docker-compose.yaml
 Dockerfile.dev
 Dockerfile
 jest.config.js
 k8s.yaml
-lint-staged.config.js
+.lintstagedrc.cjs
 README.md
 skaffold.yaml
-tsconfig.js
+tsconfig.json

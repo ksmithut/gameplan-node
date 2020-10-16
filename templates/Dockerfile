@@ -15,7 +15,7 @@ COPY --chown=node:node package.json yarn.lock ./
 RUN yarn --production --frozen-lockfile
 
 # Bundle app source
-COPY --chown=node:node . .
+COPY --chown=node:node src src
 
 # Exports
 EXPOSE 3000
