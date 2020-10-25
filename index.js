@@ -190,8 +190,8 @@ exports.run = ({ options, operations }) => {
     if (options.gitHooks) {
       operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
       operations.copy(
-        ['templates', 'lint-staged.config.js'],
-        ['lint-staged.config.js']
+        ['templates', '.lintstagedrc.cjs'],
+        ['.lintstagedrc.cjs']
       )
       devDependencies.add('husky').add('lint-staged')
     }
