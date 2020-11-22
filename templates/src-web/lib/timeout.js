@@ -1,14 +1,10 @@
-'use strict'
-
-class Timeout extends Error {
+export class Timeout extends Error {
   constructor (message = 'timeout', code = 'TIMEOUT_ERROR') {
     super(message)
     Error.captureStackTrace(this, this.constructor)
     this.code = code
   }
 }
-
-exports.Timeout = Timeout
 
 /**
  * @template TValue
@@ -18,7 +14,7 @@ exports.Timeout = Timeout
  * @param {string} [options.errorMessage]
  * @param {string} [options.errorCode]
  */
-function timeout (promise, ms, { errorMessage, errorCode } = {}) {
+export function timeout (promise, ms, { errorMessage, errorCode } = {}) {
   /** @type {NodeJS.Timeout} */
   let timeoutId
   return Promise.race([
@@ -28,5 +24,3 @@ function timeout (promise, ms, { errorMessage, errorCode } = {}) {
     }).then(() => Promise.reject(new Timeout(errorMessage, errorCode)))
   ]).finally(() => clearTimeout(timeoutId))
 }
-
-exports.timeout = timeout

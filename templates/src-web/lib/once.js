@@ -1,10 +1,8 @@
-'use strict'
-
 /**
  * @template TReturnValue
  * @param {() => TReturnValue} fn
  */
-function once (fn) {
+export function once (fn) {
   let called = false
   /** @type {TReturnValue} */
   let value
@@ -16,5 +14,3 @@ function once (fn) {
     return value
   }
 }
-
-exports.once = once

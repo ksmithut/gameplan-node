@@ -1,8 +1,6 @@
-'use strict'
-
-const { configureApp } = require('../index')
-const { once } = require('../lib/once')
-const { getConfig } = require('../config')
+import { configureApp } from '../index.js'
+import { once } from '../lib/once.js'
+import { getConfig } from '../config.js'
 
 const app = configureApp(getConfig(process.env))
 

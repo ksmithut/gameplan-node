@@ -1,21 +1,13 @@
-'use strict'
-
-const { promisify } = require('util')
+import { once } from 'events'
+import { promisify } from 'util'
 
 /**
  * @param {import('http').Server} server
  * @param {number} port
  */
-async function httpListen (server, port) {
+export async function httpListen (server, port) {
   /** @type {() => Promise<void>} */
   const close = promisify(server.close.bind(server))
-  await new Promise((resolve, reject) => {
-    server
-      .listen(port)
-      .on('listening', resolve)
-      .on('error', reject)
-  })
+  await once(server.listen(port), 'listening')
   return close
 }
-
-exports.httpListen = httpListen

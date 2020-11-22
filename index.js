@@ -91,6 +91,10 @@ exports.run = ({ options, operations }) => {
     private: true,
     main: undefined,
     bin: undefined,
+    type: undefined,
+    engines: {
+      node: '>=14.x'
+    },
     scripts: {
       build: undefined,
       format: undefined,
@@ -107,12 +111,13 @@ exports.run = ({ options, operations }) => {
   packageJSON.main = 'src/index.js'
   packageJSON.scripts.start = 'node .'
   packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
+  packageJSON.type = 'module'
 
   if (options.template === 'web') {
     packageJSON.bin = 'src/bin/server.js'
     packageJSON.scripts.start = 'node src/bin/server.js'
     packageJSON.scripts['start:dev'] =
-      'nodemon src/bin/server.js --inspect=0.0.0.0:9229'
+      'nodemon --inspect=0.0.0.0:9229 src/bin/server.js'
   }
 
   devDependencies.add('nodemon')
@@ -162,8 +167,8 @@ exports.run = ({ options, operations }) => {
   // lint
   // ===========================================================================
   {
-    packageJSON.scripts.format = `prettier-standard`
-    packageJSON.scripts.lint = `prettier-standard --check --lint`
+    packageJSON.scripts.format = 'prettier-standard'
+    packageJSON.scripts.lint = 'prettier-standard --check --lint'
     devDependencies
       .add('standard')
       .add('prettier-standard')
@@ -189,10 +194,7 @@ exports.run = ({ options, operations }) => {
     operations.spawn('git', ['init'])
     if (options.gitHooks) {
       operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
-      operations.copy(
-        ['templates', '.lintstagedrc.cjs'],
-        ['.lintstagedrc.cjs']
-      )
+      operations.copy(['templates', '.lintstagedrc.cjs'], ['.lintstagedrc.cjs'])
       devDependencies.add('husky').add('lint-staged')
     }
   }
@@ -200,6 +202,7 @@ exports.run = ({ options, operations }) => {
   operations.json(packageJSON, ['package.json'])
 
   if (dependencies.size) operations.spawn('yarn', ['add', ...dependencies])
-  if (devDependencies.size)
+  if (devDependencies.size) {
     operations.spawn('yarn', ['add', '--dev', ...devDependencies])
+  }
 }

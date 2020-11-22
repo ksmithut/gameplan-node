@@ -1,11 +1,9 @@
-'use strict'
-
-const http = require('http')
+import http from 'http'
 
 /**
  * @param {object} params
  */
-function configureServer (params) {
+export function configureServer (params) {
   /** @type {import('http').RequestListener} */
   const app = (req, res) => {
     res.end(`${req.method} ${req.url}`)
@@ -13,5 +11,3 @@ function configureServer (params) {
   const server = http.createServer(app)
   return server
 }
-
-exports.configureServer = configureServer

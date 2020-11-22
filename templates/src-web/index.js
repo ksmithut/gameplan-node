@@ -1,13 +1,11 @@
-'use strict'
-
-const { httpListen } = require('./lib/http-listen')
-const { timeout } = require('./lib/timeout')
-const { configureServer } = require('./server')
+import { httpListen } from './lib/http-listen.js'
+import { timeout } from './lib/timeout.js'
+import { configureServer } from './server.js'
 
 /**
  * @param {import('./config').Config} config
  */
-function configureApp (config) {
+export function configureApp (config) {
   const { port } = config
 
   async function start () {
@@ -25,5 +23,3 @@ function configureApp (config) {
     start
   }
 }
-
-exports.configureApp = configureApp
