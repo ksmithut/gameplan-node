@@ -2,5 +2,5 @@
 
 module.exports = {
   '*': 'prettier-standard --lint',
-  '**/*.{js,json}': () => 'tsc'
+  '**/*': () => 'tsc'
 }

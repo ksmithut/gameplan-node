@@ -6,6 +6,8 @@
 export function getConfig (env) {
   const { PORT = '3000' } = env
   return {
-    port: Number(PORT)
+    name: 'test',
+    port: Number(PORT),
+    logLevel: 'info'
   }
 }

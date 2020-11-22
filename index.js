@@ -117,7 +117,13 @@ exports.run = ({ options, operations }) => {
     packageJSON.bin = 'src/bin/server.js'
     packageJSON.scripts.start = 'node src/bin/server.js'
     packageJSON.scripts['start:dev'] =
-      'nodemon --inspect=0.0.0.0:9229 src/bin/server.js'
+      'nodemon --inspect=0.0.0.0:9229 src/bin/server.js | pino-pretty'
+    dependencies.add('zod@beta')
+    dependencies.add('pino')
+    devDependencies.add('pino-pretty').add('@types/pino')
+    dependencies.add('dotenv')
+    dependencies.add('fastify')
+    dependencies.add('commander')
   }
 
   devDependencies.add('nodemon')
@@ -166,17 +172,15 @@ exports.run = ({ options, operations }) => {
   // ===========================================================================
   // lint
   // ===========================================================================
-  {
-    packageJSON.scripts.format = 'prettier-standard'
-    packageJSON.scripts.lint = 'prettier-standard --check --lint'
-    devDependencies
-      .add('standard')
-      .add('prettier-standard')
-      .add('typescript')
-      .add('@types/node')
-    operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
-    operations.copy(['templates', '.eslintrc.json'], ['.eslintrc.json'])
-  }
+  packageJSON.scripts.format = 'prettier-standard'
+  packageJSON.scripts.lint = 'prettier-standard --check --lint'
+  devDependencies
+    .add('standard')
+    .add('prettier-standard')
+    .add('typescript')
+    .add('@types/node')
+  operations.copy(['templates', 'tsconfig.json'], ['tsconfig.json'])
+  operations.copy(['templates', '.eslintrc.json'], ['.eslintrc.json'])
 
   // ===========================================================================
   // test
