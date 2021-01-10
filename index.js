@@ -118,7 +118,7 @@ exports.run = ({ options, operations }) => {
     packageJSON.scripts.start = 'node src/bin/server.js'
     packageJSON.scripts['start:dev'] =
       'nodemon --inspect=0.0.0.0:9229 src/bin/server.js | pino-pretty'
-    dependencies.add('zod@beta')
+    dependencies.add('zod@next')
     dependencies.add('pino')
     devDependencies.add('pino-pretty').add('@types/pino')
     dependencies.add('dotenv')
