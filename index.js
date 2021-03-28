@@ -200,7 +200,7 @@ exports.run = ({ options, operations }) => {
       // operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
       // operations.copy(['templates', '.lintstagedrc.cjs'], ['.lintstagedrc.cjs'])
       // devDependencies.add('husky').add('lint-staged')
-      operations.copy(['templates', '.lefthook.yml'], ['.lefthook.yml'])
+      operations.copy(['templates', 'lefthook.yml'], ['lefthook.yml'])
       devDependencies.add('@arkweid/lefthook')
     }
   }
