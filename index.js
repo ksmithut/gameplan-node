@@ -197,9 +197,11 @@ exports.run = ({ options, operations }) => {
   if (options.gitInit) {
     operations.spawn('git', ['init'])
     if (options.gitHooks) {
-      operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
-      operations.copy(['templates', '.lintstagedrc.cjs'], ['.lintstagedrc.cjs'])
-      devDependencies.add('husky').add('lint-staged')
+      // operations.copy(['templates', '.huskyrc.json'], ['.huskyrc.json'])
+      // operations.copy(['templates', '.lintstagedrc.cjs'], ['.lintstagedrc.cjs'])
+      // devDependencies.add('husky').add('lint-staged')
+      operations.copy(['templates', '.lefthook.yml'], ['.lefthook.yml'])
+      devDependencies.add('@arkweid/lefthook')
     }
   }
 
@@ -208,5 +210,8 @@ exports.run = ({ options, operations }) => {
   if (dependencies.size) operations.spawn('yarn', ['add', ...dependencies])
   if (devDependencies.size) {
     operations.spawn('yarn', ['add', '--dev', ...devDependencies])
+  }
+  if (options.gitInit && options.gitHooks) {
+    operations.spawn('yarn', ['lefthook', 'install'])
   }
 }

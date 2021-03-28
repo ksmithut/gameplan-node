@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: true
+  commands:
+    formatter:
+      glob: '*.*'
+      run: prettier-standard {staged\_files}
+    types:
+      glob: '*.{js,json}'
+      run: tsc
