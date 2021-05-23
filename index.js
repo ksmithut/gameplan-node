@@ -51,12 +51,6 @@ exports.options = ({ directory }) => ({
     type: 'boolean',
     description: 'Use git hooks to format code',
     default: false
-  },
-  template: {
-    type: 'string',
-    description: 'Choose which template to use',
-    default: 'simple',
-    choices: ['simple', 'web']
   }
 })
 
@@ -93,7 +87,7 @@ exports.run = ({ options, operations }) => {
     bin: undefined,
     type: undefined,
     engines: {
-      node: '>=14.x'
+      node: '>=16.x'
     },
     scripts: {
       build: undefined,
@@ -113,26 +107,13 @@ exports.run = ({ options, operations }) => {
   packageJSON.scripts['start:dev'] = 'nodemon --inspect=0.0.0.0:9229'
   packageJSON.type = 'module'
 
-  if (options.template === 'web') {
-    packageJSON.bin = 'src/bin/server.js'
-    packageJSON.scripts.start = 'node src/bin/server.js'
-    packageJSON.scripts['start:dev'] =
-      'nodemon --inspect=0.0.0.0:9229 src/bin/server.js | pino-pretty'
-    dependencies.add('zod@next')
-    dependencies.add('pino')
-    devDependencies.add('pino-pretty').add('@types/pino')
-    dependencies.add('dotenv')
-    dependencies.add('fastify')
-    dependencies.add('commander')
-  }
-
   devDependencies.add('nodemon')
 
   operations.template(['templates', 'README.md'], ['README.md'], {
     name: options.name
   })
 
-  operations.copy(['templates', `src-${options.template}`], ['src'])
+  operations.copy(['templates', 'src'], ['src'])
 
   // ===========================================================================
   // debug
@@ -173,7 +154,7 @@ exports.run = ({ options, operations }) => {
   // lint
   // ===========================================================================
   packageJSON.scripts.format = 'prettier-standard'
-  packageJSON.scripts.lint = 'prettier-standard --check --lint'
+  packageJSON.scripts.lint = 'prettier-standard --check --lint && tsc'
   devDependencies
     .add('standard')
     .add('prettier-standard')

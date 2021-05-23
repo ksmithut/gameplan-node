@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
 # Needed for grpc
 # RUN apk --no-cache add --virtual libc6-compat
